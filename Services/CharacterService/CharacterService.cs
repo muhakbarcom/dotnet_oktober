@@ -8,10 +8,6 @@ namespace dotnet_oktober.Services.CharacterService
 {
     public class CharacterService : iCharacterService
     {
-        private static List<Character> characters = new List<Character>{
-            new Character(),
-            new Character{Id=1, Name = "Sam"}
-        };
         private readonly DataContex _contex;
         private readonly IMapper _mapper;
 
