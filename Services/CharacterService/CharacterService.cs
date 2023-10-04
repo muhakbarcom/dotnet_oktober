@@ -12,53 +12,73 @@ namespace dotnet_oktober.Services.CharacterService
             new Character(),
             new Character{Id=1, Name = "Sam"}
         };
+        private readonly DataContex _contex;
         private readonly IMapper _mapper;
 
-        public CharacterService(IMapper mapper)
+        public CharacterService(IMapper mapper, DataContex contex)
         {
+            _contex = contex;
             _mapper = mapper;
         }
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
         {
-            var servicesResponse = new ServiceResponse<List<GetCharacterDto>>();
-            var character = _mapper.Map<Character>(newCharacter);
-            character.Id = characters.Max(c => c.Id) + 1;
-            characters.Add(character);
+            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
 
-            servicesResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
-            return servicesResponse;
+            try
+            {
+                var character = _mapper.Map<Character>(newCharacter);
+
+                // Menambah karakter baru ke DbContext
+                _contex.Characters.Add(character);
+                await _contex.SaveChangesAsync();
+
+                // Mengambil daftar karakter yang sudah ada dari database
+                var characters = await _contex.Characters.ToListAsync();
+                serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = $"An error occurred while adding the character: {ex.Message}";
+            }
+
+            return serviceResponse;
         }
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacters(int id)
         {
-            var servicesResponse = new ServiceResponse<List<GetCharacterDto>>();
+            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             try
             {
-                var character = characters.FirstOrDefault(c => c.Id == id);
+                var dbCharacter = await _contex.Characters.FirstOrDefaultAsync(c => c.Id == id);
 
-                if (character == null)
+                if (dbCharacter == null)
                     throw new Exception($"Character with id '{id}' not found");
 
 
-                characters.Remove(character);
+                _contex.Characters.Remove(dbCharacter);
+                await _contex.SaveChangesAsync();
 
-                servicesResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+                // Mengambil daftar karakter yang tersisa dari database
+                var remainingCharacters = await _contex.Characters.ToListAsync();
+                serviceResponse.Data = remainingCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             }
             catch (Exception ex)
             {
-                servicesResponse.Success = false;
-                servicesResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
 
             }
 
-            return servicesResponse;
+            return serviceResponse;
         }
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var servicesResponse = new ServiceResponse<List<GetCharacterDto>>();
-            servicesResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            var dbCharacters = await _contex.Characters.ToListAsync();
+            servicesResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return servicesResponse;
         }
 
@@ -66,41 +86,44 @@ namespace dotnet_oktober.Services.CharacterService
         {
             var servicesResponse = new ServiceResponse<GetCharacterDto>();
 
-            var character = characters.FirstOrDefault(c => c.Id == id);
-            servicesResponse.Data = _mapper.Map<GetCharacterDto>(character);
+            var dbCharacter = await _contex.Characters.FirstOrDefaultAsync(c => c.Id == id);
+            servicesResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter);
             return servicesResponse;
         }
 
         public async Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
         {
-            var servicesResponse = new ServiceResponse<GetCharacterDto>();
+            var serviceResponse = new ServiceResponse<GetCharacterDto>();
             try
             {
-                var character = characters.FirstOrDefault(c => c.Id == updatedCharacter.Id);
+                // Cari karakter dalam database berdasarkan ID
+                var character = await _contex.Characters.FirstOrDefaultAsync(c => c.Id == updatedCharacter.Id);
 
                 if (character == null)
-                    throw new Exception($"Character with id '{updatedCharacter.Id}' not found");
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = $"Character with id '{updatedCharacter.Id}' not found";
+                    return serviceResponse;
+                }
 
+                // Update properti karakter dengan properti yang baru dari updatedCharacter
                 _mapper.Map(updatedCharacter, character);
 
-                character.Name = updatedCharacter.Name;
-                character.Class = updatedCharacter.Class;
-                character.Defense = updatedCharacter.Defense;
-                character.HitPoints = updatedCharacter.HitPoints;
-                character.Intelligence = updatedCharacter.Intelligence;
-                character.Strength = updatedCharacter.Strength;
+                // Simpan perubahan ke database
+                _contex.Characters.Update(character);
+                await _contex.SaveChangesAsync();
 
-                servicesResponse.Data = _mapper.Map<GetCharacterDto>(character);
+                // Mengembalikan data karakter yang telah diperbarui
+                serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
             }
             catch (Exception ex)
             {
-                servicesResponse.Success = false;
-                servicesResponse.Message = ex.Message;
-
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
             }
 
-            return servicesResponse;
-
+            return serviceResponse;
         }
+
     }
 }
