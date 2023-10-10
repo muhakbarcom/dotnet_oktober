@@ -29,9 +29,12 @@ namespace dotnet_oktober.Services.CharacterService
                 _contex.Characters.Add(character);
                 await _contex.SaveChangesAsync();
 
-                // Mengambil daftar karakter yang sudah ada dari database
-                var characters = await _contex.Characters.ToListAsync();
-                serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+                // Mengambil daftar karakter yang sudah ada dari database menggunakan LINQ
+                var characters = await _contex.Characters
+                    .Select(c => _mapper.Map<GetCharacterDto>(c))
+                    .ToListAsync();
+
+                serviceResponse.Data = characters;
             }
             catch (Exception ex)
             {
@@ -53,8 +56,8 @@ namespace dotnet_oktober.Services.CharacterService
                     throw new Exception($"Character with id '{id}' not found");
 
 
-                _contex.Characters.Remove(dbCharacter);
-                await _contex.SaveChangesAsync();
+                _contex.Characters.Remove(dbCharacter); // Hapus karakter dari DbContext
+                await _contex.SaveChangesAsync(); // Simpan perubahan ke database
 
                 // Mengambil daftar karakter yang tersisa dari database
                 var remainingCharacters = await _contex.Characters.ToListAsync();
@@ -82,8 +85,12 @@ namespace dotnet_oktober.Services.CharacterService
         {
             var servicesResponse = new ServiceResponse<GetCharacterDto>();
 
-            var dbCharacter = await _contex.Characters.FirstOrDefaultAsync(c => c.Id == id);
-            servicesResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter);
+            var dbCharacter = await _contex.Characters
+                .Where(c => c.Id == id)
+                .Select(c => _mapper.Map<GetCharacterDto>(c))
+                .FirstOrDefaultAsync();
+
+            servicesResponse.Data = dbCharacter;
             return servicesResponse;
         }
 
