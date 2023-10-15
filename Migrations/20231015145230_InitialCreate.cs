@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -27,6 +28,25 @@ namespace dotnet_oktober.Migrations
                 {
                     table.PrimaryKey("PK_Characters", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    USERNAME = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    EMAIL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FULL_NAME = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CREATED_BY = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    CREATED_DT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CHANGED_BY = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    CHANGED_DT = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.ID);
+                });
         }
 
         /// <inheritdoc />
@@ -34,6 +54,9 @@ namespace dotnet_oktober.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Characters");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

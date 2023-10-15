@@ -12,6 +12,10 @@ namespace dotnet_oktober
             CreateMap<Character, GetCharacterDto>();
             CreateMap<AddCharacterDto, Character>();
             CreateMap<UpdateCharacterDto, Character>();
+
+            CreateMap<User, GetUserDto>();
+            CreateMap<AddUserDto, User>();
+            CreateMap<UpdateUserDto, User>();
         }
     }
 }
