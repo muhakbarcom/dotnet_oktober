@@ -14,6 +14,10 @@ namespace dotnet_oktober.Models
         [MaxLength(50)]
         public required string USERNAME { get; set; }
 
+        [Required]
+        [MaxLength(255)]
+        public required string PASSWORD { get; set; }
+
         [EmailAddress]
         public string? EMAIL { get; set; }
 

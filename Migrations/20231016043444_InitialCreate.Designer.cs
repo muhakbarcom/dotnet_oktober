@@ -12,7 +12,7 @@ using dotnet_oktober.Data;
 namespace dotnet_oktober.Migrations
 {
     [DbContext(typeof(DataContex))]
-    [Migration("20231015145230_InitialCreate")]
+    [Migration("20231016043444_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -86,6 +86,11 @@ namespace dotnet_oktober.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PASSWORD")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("USERNAME")
                         .IsRequired()

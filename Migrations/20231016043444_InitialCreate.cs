@@ -36,6 +36,7 @@ namespace dotnet_oktober.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     USERNAME = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PASSWORD = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     EMAIL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FULL_NAME = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CREATED_BY = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),

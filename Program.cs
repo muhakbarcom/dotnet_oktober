@@ -1,6 +1,7 @@
 global using dotnet_oktober.Models;
 global using dotnet_oktober.Services.CharacterService;
 global using dotnet_oktober.Services.UserService;
+global using dotnet_oktober.Services.AuthService;
 global using dotnet_oktober.Dtos.Character;
 global using dotnet_oktober.Dtos.User;
 global using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<iCharacterService, CharacterService>();
 builder.Services.AddScoped<iUserService, UserService>();
+builder.Services.AddScoped<iAuthService, AuthService>();
 
 
 var app = builder.Build();

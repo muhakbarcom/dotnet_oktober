@@ -84,6 +84,11 @@ namespace dotnet_oktober.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("PASSWORD")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("USERNAME")
                         .IsRequired()
                         .HasMaxLength(50)

@@ -9,6 +9,7 @@ namespace dotnet_oktober.Dtos.User
     {
         public int ID { get; set; }
         public required string USERNAME { get; set; }
+        public string? PASSWORD { get; set; }
         public string? EMAIL { get; set; }
         public required string FULL_NAME { get; set; }
         public required string CREATED_BY { get; set; }

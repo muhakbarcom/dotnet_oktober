@@ -16,6 +16,7 @@ namespace dotnet_oktober
             CreateMap<User, GetUserDto>();
             CreateMap<AddUserDto, User>();
             CreateMap<UpdateUserDto, User>();
+
         }
     }
 }
