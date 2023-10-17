@@ -17,7 +17,6 @@ namespace dotnet_oktober.Controllers.User
         {
             _UserService = UserService;
         }
-
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> Get()
         {

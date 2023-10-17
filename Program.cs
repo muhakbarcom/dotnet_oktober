@@ -9,6 +9,8 @@ global using dotnet_oktober.Data;
 global using dotnet_oktober.Middleware;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,12 +29,15 @@ builder.Services.AddScoped<iAuthService, AuthService>();
 
 var app = builder.Build();
 
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseMiddleware<JwtMiddleware>();
 app.UseHttpsRedirection();
 
