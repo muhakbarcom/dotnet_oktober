@@ -8,7 +8,7 @@ namespace dotnet_oktober.Services.AuthService
 {
     public interface iAuthService
     {
-        Task<ServiceResponse<List<AuthResDto>>> Login(AuthUserDto request);
+        Task<ServiceResponse<AuthResDto>> Login(AuthUserDto request);
         Task<ServiceResponse<List<GetUserDto>>> Register(AddUserDto newAuth);
         // Task<ServiceResponse<List<GetUserDto>>> Logout();
 

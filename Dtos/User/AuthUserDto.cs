@@ -13,7 +13,7 @@ namespace dotnet_oktober.Dtos.User
 
     public class AuthResDto
     {
-        public string USERNAME { get; set; }
-        public string TOKEN { get; set; }
+        public string? USERNAME { get; set; }
+        public string? TOKEN { get; set; }
     }
 }

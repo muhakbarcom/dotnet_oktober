@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_oktober.Controllers.User
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase

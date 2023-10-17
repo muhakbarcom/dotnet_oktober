@@ -6,6 +6,9 @@ global using dotnet_oktober.Dtos.Character;
 global using dotnet_oktober.Dtos.User;
 global using Microsoft.EntityFrameworkCore;
 global using dotnet_oktober.Data;
+global using dotnet_oktober.Middleware;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,9 +33,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<JwtMiddleware>();
 app.UseHttpsRedirection();
 
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

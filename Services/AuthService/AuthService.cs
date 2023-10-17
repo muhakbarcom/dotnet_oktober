@@ -66,9 +66,9 @@ namespace dotnet_oktober.Services.AuthService
         }
 
         //login
-        public async Task<ServiceResponse<List<AuthResDto>>> Login(AuthUserDto newAuth)
+        public async Task<ServiceResponse<AuthResDto>> Login(AuthUserDto newAuth)
         {
-            var serviceResponse = new ServiceResponse<List<AuthResDto>>();
+            var serviceResponse = new ServiceResponse<AuthResDto>();
 
             try
             {
@@ -92,13 +92,11 @@ namespace dotnet_oktober.Services.AuthService
 
                 string token = CreateToken(user);
 
-                serviceResponse.Data = await _contex.Users
-                    .Select(c => _mapper.Map<AuthResDto>(c))
-                    .ToListAsync();
+                // ambil USERNAME dan TOKEN
+                var USERNAME = newAuth.USERNAME;
 
-                serviceResponse.Data[0].TOKEN = token;
-
-
+                // masukan USERNAME dan TOKEN ke serviceResponse
+                serviceResponse.Data = new AuthResDto { USERNAME = USERNAME, TOKEN = token };
             }
             catch (Exception ex)
             {
