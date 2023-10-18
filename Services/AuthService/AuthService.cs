@@ -32,9 +32,10 @@ namespace dotnet_oktober.Services.AuthService
             try
             {
                 var Auth = _mapper.Map<User>(newAuth);
+                var newSalt = BCrypt.Net.BCrypt.GenerateSalt();
 
                 // hash password
-                Auth.PASSWORD = BCrypt.Net.BCrypt.HashPassword(Auth.PASSWORD, "akbarSecret", true, BCrypt.Net.HashType.SHA256);
+                Auth.PASSWORD = BCrypt.Net.BCrypt.HashPassword(Auth.PASSWORD, newSalt, true, BCrypt.Net.HashType.SHA256);
 
                 // Menambah karakter baru ke DbContext
                 _contex.Users.Add(Auth);
@@ -83,7 +84,7 @@ namespace dotnet_oktober.Services.AuthService
                 }
 
                 // cek apakah password benar
-                if (!BCrypt.Net.BCrypt.Verify(newAuth.PASSWORD, user.PASSWORD))
+                if (!BCrypt.Net.BCrypt.Verify(newAuth.PASSWORD, user.PASSWORD, true, BCrypt.Net.HashType.SHA256))
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Password salah";
@@ -141,7 +142,6 @@ namespace dotnet_oktober.Services.AuthService
             return tokenHandler.WriteToken(token);
         }
 
-
-
+        
     }
 }

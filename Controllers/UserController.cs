@@ -13,6 +13,7 @@ namespace dotnet_oktober.Controllers.User
     {
         private readonly iUserService _UserService;
 
+
         public UserController(iUserService UserService)
         {
             _UserService = UserService;
@@ -20,6 +21,9 @@ namespace dotnet_oktober.Controllers.User
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> Get()
         {
+            var USERNAME = HttpContext.Items["USERNAME"];
+
+
             return Ok(await _UserService.GetAllUsers());
         }
 

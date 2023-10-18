@@ -62,9 +62,20 @@ namespace dotnet_oktober.Middleware
             {
                 var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
 
-                if (principal.Identity.IsAuthenticated)
+                if (!principal.Identity.IsAuthenticated) // if token is not valid
+                {
+                    // return error
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Token is not valid!";
+                    context.Response.StatusCode = 400;
+                    await context.Response.WriteAsJsonAsync(serviceResponse);
+                    await context.Response.CompleteAsync();
+                }
+                else
                 {
                     context.User = principal;
+
+                    context.Items["USERNAME"] = principal.Identity.Name;
                 }
             }
             catch (Exception ex)
